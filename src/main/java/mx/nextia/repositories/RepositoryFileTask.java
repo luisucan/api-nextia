@@ -5,15 +5,14 @@
  */
 package mx.nextia.repositories;
 
-import mx.nextia.entities.Task;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
+import mx.nextia.entities.FileTask;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  *
  * @author luisucan
  */
-public interface RepositoryTask extends JpaRepository<Task, Integer> {
-    public Page<Task> findAllByUserUserId(Pageable pageable, int userId);
+public interface RepositoryFileTask extends JpaRepository<FileTask, Integer> {
+    public List<FileTask> findByTaskTaskId(int taskId);
 }

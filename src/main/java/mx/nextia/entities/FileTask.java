@@ -5,6 +5,7 @@
  */
 package mx.nextia.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -24,12 +25,14 @@ import lombok.Data;
 public class FileTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer taskId;
+    private Integer fileTaskId;
     
     private String originalName;
     private Long size;
     private String mineType;
+    private String name;
     
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Task task;
 }

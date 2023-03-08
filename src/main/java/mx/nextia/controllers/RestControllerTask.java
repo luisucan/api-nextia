@@ -63,7 +63,7 @@ public class RestControllerTask {
             Pageable pageable
     ) {
         try {
-            Page<Task> tasks = repositoryTask.findAll(pageable);
+            Page<Task> tasks = repositoryTask.findAllByUserUserId(pageable, userId);
             
             return ResponseEntity.ok(tasks);
         } catch (Exception e) {
