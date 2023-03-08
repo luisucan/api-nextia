@@ -5,6 +5,7 @@
  */
 package mx.nextia.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -34,5 +35,6 @@ public class Task {
     private Date updatedAt;
     
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private User user;
 }

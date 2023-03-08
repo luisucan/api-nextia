@@ -22,7 +22,7 @@ public class TokenUtils {
 
     private static String SECRET = "AAD1C618516AD52C6B5125893D8C1F3DB4CB0987852E28D58EE0F4FD3308DC70";
 
-    private static Long EXPIRATION = 900000L;
+    private static Long EXPIRATION = 900000000L;
 
     public static String createToken(String nombre, String usuario) {
         Date expirationDate = new Date(System.currentTimeMillis() + EXPIRATION);

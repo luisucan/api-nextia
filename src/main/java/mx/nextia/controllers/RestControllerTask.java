@@ -16,6 +16,8 @@ import mx.nextia.repositories.RepositoryTask;
 import mx.nextia.repositories.RepositoryUser;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +25,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -42,16 +43,35 @@ public class RestControllerTask {
     @Autowired
     private RepositoryUser repositoryUser;
 
-    @GetMapping("/{userId}")
+    @GetMapping("/{taskId}")
+    public ResponseEntity<?> findTask(
+            @PathVariable int taskId
+    ) {
+        try {
+            Task task = repositoryTask.findById(taskId)
+                    .orElseThrow(()->new Exception());
+            
+            return ResponseEntity.ok(task);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    
+    @GetMapping("/page/{userId}")
     public ResponseEntity<?> findTask(
             @PathVariable int userId,
-            @RequestParam(name = "page", required = false) int page,
-            @RequestParam(name = "take", required = false) int take
+            Pageable pageable
     ) {
-        return null;
+        try {
+            Page<Task> tasks = repositoryTask.findAll(pageable);
+            
+            return ResponseEntity.ok(tasks);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
-    @PostMapping("/{userId}")
+    @PostMapping("/user/{userId}")
     public ResponseEntity<?> create(
             @PathVariable int userId,
             @RequestBody CreateTaskDTO taskDTO
@@ -81,13 +101,13 @@ public class RestControllerTask {
     ) {
         try {
             Task task = repositoryTask.findById(taskId)
-                    .orElseThrow(()->new Exception("tarea no encontrada"));
+                    .orElseThrow(()->new Exception("tarea no encontrada")); 
             
             task.setTitle(taskDTO.getTitle());
             task.setDescription(taskDTO.getDescription());
             task.setUpdatedAt(new Date());
             
-            task = repositoryTask.save(task);
+            repositoryTask.save(task);
             
             return ResponseEntity.ok(task);
             
@@ -96,7 +116,7 @@ public class RestControllerTask {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{taskId}")
     public ResponseEntity<?> delete(@PathVariable int taskId) {
         try {
             Task task = repositoryTask.findById(taskId)

@@ -6,6 +6,8 @@
 package mx.nextia.repositories;
 
 import mx.nextia.entities.Task;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -13,5 +15,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author luisucan
  */
 public interface RepositoryTask extends JpaRepository<Task, Integer> {
-    
+    public Page<Task> findAll(Pageable pageable);
 }
