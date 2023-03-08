@@ -11,6 +11,7 @@ import mx.nextia.repositories.RepositoryUser;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +33,9 @@ public class RestControllerUser {
     @Autowired
     private RepositoryUser repositoryUser;
     
+    @Autowired
+    PasswordEncoder passwordEncoder;
+    
     @GetMapping("/{userId}")
     public ResponseEntity<?> findOne(@PathVariable int userId){
         try {
@@ -47,6 +51,9 @@ public class RestControllerUser {
     public ResponseEntity<?> create(@RequestBody CreateUserDTO userDTO) {
         try {
             User user = modelMapper.map(userDTO, User.class);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setActive(true);
+            
             user = repositoryUser.save(user);
             
             return ResponseEntity.ok(user);
