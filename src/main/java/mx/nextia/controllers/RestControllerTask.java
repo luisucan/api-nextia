@@ -105,6 +105,7 @@ public class RestControllerTask {
             
             task.setTitle(taskDTO.getTitle());
             task.setDescription(taskDTO.getDescription());
+            task.setEstatus(taskDTO.isEstatus());
             task.setUpdatedAt(new Date());
             
             repositoryTask.save(task);
