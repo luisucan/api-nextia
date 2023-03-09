@@ -5,17 +5,24 @@
  */
 package mx.nextia.controllers;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
+import java.util.List;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import mx.nextia.dto.CreateTaskDTO;
 import mx.nextia.dto.UpdateTaskDTO;
+import mx.nextia.entities.FileTask;
 import mx.nextia.entities.Task;
 import mx.nextia.entities.User;
+import mx.nextia.repositories.RepositoryFileTask;
 import mx.nextia.repositories.RepositoryTask;
 import mx.nextia.repositories.RepositoryUser;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +49,12 @@ public class RestControllerTask {
 
     @Autowired
     private RepositoryUser repositoryUser;
+    
+    @Autowired
+    private RepositoryFileTask repositoryFileTask;
+    
+    @Value("${path.files}")
+    private String dir;
 
     @GetMapping("/{taskId}")
     public ResponseEntity<?> findTask(
@@ -122,6 +135,13 @@ public class RestControllerTask {
         try {
             Task task = repositoryTask.findById(taskId)
                     .orElseThrow(()->new Exception("tarea no encontrada"));
+            
+            List<FileTask> files = repositoryFileTask.findByTaskTaskId(taskId);
+            for (FileTask file : files) {
+                repositoryFileTask.delete(file);
+                Path path = Paths.get(dir);
+                Boolean isDelete = Files.deleteIfExists(path.resolve(file.getName()));
+            }
             
             repositoryTask.delete(task);
             
